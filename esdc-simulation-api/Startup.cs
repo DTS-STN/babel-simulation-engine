@@ -12,6 +12,8 @@ using Microsoft.OpenApi.Models;
 using System.Reflection;
 using System.IO;
 
+using esdc_simulation_api.Controllers;
+
 using esdc_simulation_base.Src.Lib;
 using esdc_simulation_base.Src.Storage;
 using esdc_simulation_base.Src.Rules;
@@ -19,8 +21,6 @@ using esdc_simulation_base.Src.Rules;
 using maternity_benefits;
 using maternity_benefits.Storage.EF;
 using maternity_benefits.Storage.EF.Store;
-
-using MBPack = esdc_simulation_classes.MaternityBenefits;
 
 namespace esdc_simulation_api
 {
@@ -71,6 +71,16 @@ namespace esdc_simulation_api
             };
             services.AddSingleton<IOptions<RulesOptions>>(x => Options.Create(rulesOptions));
 
+            // Password Filter options
+            var passwordFilter = Configuration["PasswordOptions:Password"] ?? 
+                Environment.GetEnvironmentVariable("PasswordFilter");
+
+            var passwordOptions = new PasswordFilterOptions() {
+                Password = passwordFilter
+            };
+            services.AddSingleton<IOptions<PasswordFilterOptions>>(x => Options.Create(passwordOptions));
+            services.AddScoped<PasswordFilterAttribute>();
+
             // DB injection
             string connectionString = Configuration.GetConnectionString("DefaultDB") ??
                 Environment.GetEnvironmentVariable("DEFAULT_DB");
@@ -116,13 +126,8 @@ namespace esdc_simulation_api
         }
 
         private void InjectMaternityBenefits(IServiceCollection services) {
-            services.AddScoped<IHandleSimulationRequests<MaternityBenefitsCase>, 
-                SimulationRequestHandler<MaternityBenefitsCase,MaternityBenefitsPerson>
-            >();
-
-            services.AddScoped<IHandlePersonCreationRequests<MBPack.MaternityBenefitsPersonRequest>, 
-                MaternityBenefitPersonCreationRequestHandler
-            >();
+            services.AddScoped<IHandleSimulationRequests, SimulationRequestHandler>();
+            services.AddScoped<IHandleNoStorageSimulationRequests, NoStorageSimulationRequestHandler>();
 
             services.AddScoped<IRunSimulations<MaternityBenefitsCase, MaternityBenefitsPerson>,
                 SimulationRunner<MaternityBenefitsCase, MaternityBenefitsPerson>>();

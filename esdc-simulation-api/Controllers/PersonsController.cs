@@ -14,19 +14,17 @@ using esdc_simulation_classes.MaternityBenefits;
 
 namespace esdc_simulation_api.Controllers
 {
+    [ServiceFilter(typeof(PasswordFilterAttribute))]
     [ApiController]
     [Route("[controller]")]
     public class PersonsController : ControllerBase
     {
-        private readonly IHandlePersonCreationRequests<MaternityBenefitsPersonRequest> _personRequestHandler;
         private readonly IStorePersons<MaternityBenefitsPerson> _personStore;
 
         public PersonsController(
-            IHandlePersonCreationRequests<MaternityBenefitsPersonRequest> personRequestHandler,
             IStorePersons<MaternityBenefitsPerson> personStore
         )
         {
-            _personRequestHandler = personRequestHandler;
             _personStore = personStore;
         }
 
@@ -41,7 +39,8 @@ namespace esdc_simulation_api.Controllers
         [HttpPost]
         public ActionResult AddPersons(List<MaternityBenefitsPersonRequest> personsRequest)
         {
-            _personRequestHandler.Handle(personsRequest);
+            var persons = personsRequest.Select(Convert);
+            _personStore.AddPersons(persons);
             return Ok();
         }
 
@@ -77,6 +76,17 @@ namespace esdc_simulation_api.Controllers
             _personStore.AddPersons(mockPersons);
 
             return $"{numberOfMocks} Mock Persons generated";
+        }
+
+        private MaternityBenefitsPerson Convert(MaternityBenefitsPersonRequest req) {
+            return new MaternityBenefitsPerson() {
+                Id = Guid.NewGuid(),
+                AverageIncome = req.AverageIncome,
+                SpokenLanguage = req.SpokenLanguage,
+                EducationLevel = req.EducationLevel,
+                Province = req.Province,
+                Age = req.Age
+            };
         }
 
     }
