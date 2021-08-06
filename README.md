@@ -55,6 +55,8 @@ Ensure the config settings are properly set in the proper appsettings.XXX.json f
 - ConnectionStrings.DefaultDB: this is the connection string for the database that stores the simulation data and results.
 - RulesOptions.Url: This is the host URL for the Rules Engine
 
+* For deployments, the configs are handled in the Azure App Services, and are injected as environment variables.
+
 ### Running Locally
 
 - `cd` into the main solution folder
@@ -73,21 +75,7 @@ Tests are set up for the base library and the maternity-benefits class library. 
 
 ### Deploying
 
-There are currently two separate deployments of the Simulation Engine, both in Microsoft Azure (Azure App Service). The mock deployment is connected to a mock database, and the prod deployment is connected to the prod database. Prior to deploying, ensure the configs are appropriately set in the appsettings.Production.json file in esdc-simulation-api project.
-
-I've used VS Code as an IDE, and it comes with extensions that make deployment easier. Install the following extensions:
-- Azure Account
-- Azure App Service
-- Docker
-
-Once successfully installed, you will get corresponding tabs in VS code that can be used to facilitate deployment. Ensure you are signed in to Azure and that VS Code is connected to your Azure account.
-
-Build the docker file. You can use the previously mentioned docker command or use the docker plugin in VS Code by right-clicking on the docker file and selecting "Build Image".
-
-Navigate to the Docker tab in VS Code and find the "Images" section. Find the image that you just built, expand it, then right-click on the "latest" tag, and select "push". It should confirm the container that will be used for deployment.
-
-If deploying to both mock and prod environments, you will need to do this twice. First, set the appsettings.Production.json config settings to the mock values, then build and push the image. Then change the config to the prod values, and repeat. 
-
+There are currently two separate deployments of the Simulation Engine, both in Microsoft Azure (Azure App Service). The mock deployment is connected to a mock database, and the prod deployment is connected to the prod database. Deployments are set up using github actions, based on manually clicking a button. Go to the github actions, choose the workflow (Deploy Mock or Deploy Prod), and then run it.
 
 ### Nuget package
 
