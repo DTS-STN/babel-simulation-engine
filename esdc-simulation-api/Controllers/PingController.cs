@@ -14,6 +14,11 @@ namespace esdc_simulation_api.Controllers
     [Route("[controller]")]
     public class PingController : ControllerBase
     {
+        private readonly ILogger<PingController> _logger;
+        public PingController(ILogger<PingController> logger) {
+            _logger = logger;
+        }
+
         /// <summary>
         /// Ping
         /// </summary>
@@ -21,6 +26,8 @@ namespace esdc_simulation_api.Controllers
         [HttpGet]
         public ActionResult<string> Index()
         {
+            _logger.Log(LogLevel.Information, "Ping!");
+            _logger.Log(LogLevel.Error, "Ping Error!");
             return $"Welcome to the Simulation API: {DateTime.Now}";
         }
     }
