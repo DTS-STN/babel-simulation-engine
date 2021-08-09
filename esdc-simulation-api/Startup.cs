@@ -74,7 +74,7 @@ namespace esdc_simulation_api
 
             // Password Filter options
             var passwordFilter = Configuration["PasswordOptions:Password"] ?? 
-                Environment.GetEnvironmentVariable("PasswordFilter");
+                Environment.GetEnvironmentVariable("PASSWORD_FILTER");
 
             var passwordOptions = new PasswordFilterOptions() {
                 Password = passwordFilter
