@@ -48,14 +48,6 @@ namespace maternity_benefits
             return _simulationStore.GetAll();
         }
 
-        public SimulationResult CreateSimulationNoStorage(Simulation<MaternityBenefitsCase> simulation) {
-            var persons = _personStore.GetAllPersons();
-
-            var result = _runner.Run(simulation, persons);
-
-            return result;
-        }
-
         public void CreateSimulation(Simulation<MaternityBenefitsCase> simulation)
         {
             _simulationStore.Save(simulation);

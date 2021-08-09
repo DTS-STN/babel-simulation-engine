@@ -21,6 +21,7 @@ using esdc_simulation_base.Src.Rules;
 using maternity_benefits;
 using maternity_benefits.Storage.EF;
 using maternity_benefits.Storage.EF.Store;
+using maternity_benefits.Storage.Cache;
 
 namespace esdc_simulation_api
 {
@@ -127,7 +128,6 @@ namespace esdc_simulation_api
 
         private void InjectMaternityBenefits(IServiceCollection services) {
             services.AddScoped<IHandleSimulationRequests, SimulationRequestHandler>();
-            services.AddScoped<IHandleNoStorageSimulationRequests, NoStorageSimulationRequestHandler>();
 
             services.AddScoped<IRunSimulations<MaternityBenefitsCase, MaternityBenefitsPerson>,
                 SimulationRunner<MaternityBenefitsCase, MaternityBenefitsPerson>>();
@@ -146,13 +146,13 @@ namespace esdc_simulation_api
 
             // EF Storage
             services.AddScoped<IStorePersons<MaternityBenefitsPerson>, MaternityBenefitsPersonEFStore>();
-            services.AddScoped<IStoreSimulations<MaternityBenefitsCase>, MaternityBenefitsSimulationEFStore>();
-            services.AddScoped<IStoreSimulationResults<MaternityBenefitsCase>, MaternityBenefitsSimulationResultsEFStore>();
+            //services.AddScoped<IStoreSimulations<MaternityBenefitsCase>, MaternityBenefitsSimulationEFStore>();
+            //services.AddScoped<IStoreSimulationResults<MaternityBenefitsCase>, MaternityBenefitsSimulationResultsEFStore>();
             
             // Cache Storage
             // services.AddScoped<IStorePersons<MaternityBenefitsPerson>, MaternityBenefitsPersonStore>();
-            // services.AddScoped<IStoreSimulations<MaternityBenefitsCase>, MaternityBenefitsSimulationStore>();
-            // services.AddScoped<IStoreSimulationResults<MaternityBenefitsCase>, MaternityBenefitsSimulationResultsStore>();
+            services.AddScoped<IStoreSimulations<MaternityBenefitsCase>, MaternityBenefitsSimulationCacheStore>();
+            services.AddScoped<IStoreSimulationResults<MaternityBenefitsCase>, MaternityBenefitsSimulationResultsCacheStore>();
         }
 
     }

@@ -6,14 +6,14 @@ using esdc_simulation_base.Src.Storage;
 
 namespace maternity_benefits.Storage.Cache
 {
-    public class MaternityBenefitsPersonStore : IStorePersons<MaternityBenefitsPerson>
+    public class MaternityBenefitsPersonCacheStore : IStorePersons<MaternityBenefitsPerson>
     {
         private readonly static string cacheKeyBase = "maternity_benefits";
         private readonly static string cacheKeyPersons = $"{cacheKeyBase}_persons";
 
         private readonly IMemoryCache _cache;
 
-        public MaternityBenefitsPersonStore(IMemoryCache cache) {
+        public MaternityBenefitsPersonCacheStore(IMemoryCache cache) {
             _cache = cache;
             var curr = GetAllPersons();
             if (curr == null) {
@@ -36,6 +36,7 @@ namespace maternity_benefits.Storage.Cache
         }
 
         public void DeletePerson(Guid id) {
+            // TODO
             throw new NotImplementedException();
         }
     }

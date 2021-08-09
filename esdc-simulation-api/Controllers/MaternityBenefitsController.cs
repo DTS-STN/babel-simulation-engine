@@ -9,7 +9,6 @@ using Mapper = esdc_simulation_api.Controllers.MaternityBenefitMappers;
 
 namespace esdc_simulation_api.Controllers
 {
-    [DisableFilter]
     [ApiController]
     [Route("[controller]")]
     public class MaternityBenefitsController : ControllerBase
@@ -32,6 +31,7 @@ namespace esdc_simulation_api.Controllers
             }
         }
 
+        [DisableFilter]
         [HttpGet]
         public ActionResult<AllSimulationsResponse> GetAllSimulations()
         {
@@ -69,7 +69,8 @@ namespace esdc_simulation_api.Controllers
                 return BadRequest(e.Message);
             }
         }
-
+        
+        [DisableFilter]
         [HttpDelete("{untilLastXDays}/Batch")]
         public ActionResult DeleteSimulationBatch(int untilLastXDays)
         {
