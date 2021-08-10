@@ -24,6 +24,5 @@ namespace esdc_simulation_base.Src.Lib
 
             return result;
         }
-
     }
 }

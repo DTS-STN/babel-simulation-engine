@@ -11,6 +11,5 @@ namespace esdc_simulation_base.Src.Classes
         {
             ResultSet = new Dictionary<Guid, PersonCaseResult>();
         }
-
     }
 }

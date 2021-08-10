@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
-using esdc_simulation_base.Src.Lib;
 using esdc_simulation_base.Src.Storage;
 using esdc_simulation_base.Src.Classes;
-
 using maternity_benefits;
 using maternity_benefits.Storage.Mock;
 
@@ -20,14 +19,20 @@ namespace esdc_simulation_api.Controllers
     public class PersonsController : ControllerBase
     {
         private readonly IStorePersons<MaternityBenefitsPerson> _personStore;
+        private readonly ILogger<PersonsController> _logger;
 
         public PersonsController(
-            IStorePersons<MaternityBenefitsPerson> personStore
-        )
+            IStorePersons<MaternityBenefitsPerson> personStore,
+            ILogger<PersonsController> logger)
         {
             _personStore = personStore;
+            _logger = logger;
         }
 
+        /// <summary>
+        /// Get all the persons from the simulation store that are used for running a simulation
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public ActionResult<IEnumerable<MaternityBenefitsPerson>> GetPersons()
         {
@@ -35,22 +40,37 @@ namespace esdc_simulation_api.Controllers
             return Ok(persons);
         }
 
-        
+        /// <summary>
+        /// Add a list of persons to the simulation store
+        /// </summary>
+        /// <param name="personsRequest"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult AddPersons(List<MaternityBenefitsPersonRequest> personsRequest)
         {
+            _logger.LogInformation("Adding {0} Persons", personsRequest.Count);
             var persons = personsRequest.Select(Convert);
             _personStore.AddPersons(persons);
             return Ok();
         }
 
+        /// <summary>
+        /// Delete all persons from the simulation store
+        /// </summary>
+        /// <returns></returns>
         [HttpDelete]
         public ActionResult DeletePersons()
         {
+            _logger.LogInformation("Clearing the persons data store");
             _personStore.Clear();
             return Ok();
         }
 
+        /// <summary>
+        /// Delete a single person (by Id) from the simulation store
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete("{id}")]
         public ActionResult DeletePerson(Guid id)
         {
@@ -63,10 +83,16 @@ namespace esdc_simulation_api.Controllers
         }
 
 
+        /// <summary>
+        /// Generate Mock Persons to be stored for subsequent simulations
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("Mock")]
-        public ActionResult<string> MockSetup()
+        public ActionResult MockSetup()
         {   
             var numberOfMocks = 100;
+            _logger.LogInformation("Generating and storing {0} mock persons", numberOfMocks);
+
             var persons = _personStore.GetAllPersons();
             if (persons.Count() > 0) {
                 return BadRequest(new { message = "DB is populated. Cannot generate mocks."});
@@ -75,7 +101,7 @@ namespace esdc_simulation_api.Controllers
             var mockPersons = MockCreator.GetMockPersons(numberOfMocks);
             _personStore.AddPersons(mockPersons);
 
-            return $"{numberOfMocks} Mock Persons generated";
+            return Ok();
         }
 
         private MaternityBenefitsPerson Convert(MaternityBenefitsPersonRequest req) {

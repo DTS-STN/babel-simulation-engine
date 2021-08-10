@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Microsoft.Extensions.Caching.Memory;
 
 using esdc_simulation_base.Src.Classes;

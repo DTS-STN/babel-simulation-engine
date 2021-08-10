@@ -24,8 +24,8 @@ This is a concrete example of a class library that implements the interfaces spe
 ## Spec
 
 The OpenAPI Spec for the project can be viewed at `/swagger/v1/swagger.json`, and is the most reliable source for the spec. But the general functionality includes the following:
-- Create Persons: This request allows you to send a list of simulated persons in to be stored in the system for use by subsequent simulations. This call is used by the Data Primer to load the simulated persons into the system. The request body is a list of the simulated persons containing the required properties.
-- Get Persons: This request allows you to view all the persons that will be used in simulations.
+- Create Persons: This request allows you to send a list of simulated persons in to be stored in the system for use by subsequent simulations. This call is used by the Data Primer to load the simulated persons into the system. The request body is a list of the simulated persons containing the required properties. Note that this call requires a password to be passed in the header.
+- Get Persons: This request allows you to view all the persons that will be used in simulations. Note that this call requires a password to be passed in the header.
 - Create Simulation: This request kicks off a new simulation and returns the unique GUID of the resulting simulation. The request body must contain the specifications for both the base case and the variant case. This request is used by the Front-end Web App.
 - Get Simulation Results: Using a simulations unique GUID, this request fetches the results of running a simulation, including the base/variant cases, as well as the simulated persons, their demographic info, and their base/variant amounts. This request is used by the Front-end Web App.
 

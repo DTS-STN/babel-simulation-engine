@@ -27,6 +27,5 @@ namespace esdc_simulation_base.Src.Rules
             }
             return result.Data;
         }
-
     }
 }

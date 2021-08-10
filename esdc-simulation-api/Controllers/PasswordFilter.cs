@@ -17,11 +17,9 @@ namespace esdc_simulation_api.Controllers
         }
 
         public override void OnActionExecuting(ActionExecutingContext context) {
-            // Check header for password
-            // if not there
             var headerPass = context.HttpContext.Request.Headers["password"];
             if (headerPass != _password) {
-                throw new UnauthorizedAccessException("Unauthorized to perform this action");
+                throw new UnauthorizedAccessException("Correct value missing from 'password' header");
             }
         }
     }

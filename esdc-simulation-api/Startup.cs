@@ -1,4 +1,7 @@
 using System;
+using System.IO;
+using System.Reflection;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -6,11 +9,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
-using RestSharp;
-
 using Microsoft.OpenApi.Models;
-using System.Reflection;
-using System.IO;
+using RestSharp;
 
 using esdc_simulation_api.Controllers;
 
@@ -154,6 +154,5 @@ namespace esdc_simulation_api
             services.AddScoped<IStoreSimulations<MaternityBenefitsCase>, MaternityBenefitsSimulationCacheStore>();
             services.AddScoped<IStoreSimulationResults<MaternityBenefitsCase>, MaternityBenefitsSimulationResultsCacheStore>();
         }
-
     }
 }

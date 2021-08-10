@@ -6,7 +6,6 @@ using esdc_simulation_base.Src.Lib;
 using esdc_simulation_base.Src.Classes;
 using esdc_simulation_base.Src.Storage;
 
-
 namespace maternity_benefits
 {
     public interface IHandleSimulationRequests {
@@ -14,7 +13,6 @@ namespace maternity_benefits
         List<Simulation<MaternityBenefitsCase>> GetAllSimulations();
         void CreateSimulation(Simulation<MaternityBenefitsCase> simulation);
         (Simulation<MaternityBenefitsCase>, SimulationResult) GetSimulationWithResult(Guid simulationId);
-        void DeleteSimulationBatch(int untilLastXDays);
         void DeleteSimulation(Guid simulationId);
     }
     public class SimulationRequestHandler : IHandleSimulationRequests
@@ -64,15 +62,6 @@ namespace maternity_benefits
             var simulation = _simulationStore.Get(simulationId);
             var result = _resultStore.Get(simulationId); 
             return (simulation, result);
-        }
-
-        public void DeleteSimulationBatch(int untilLastXDays)
-        {
-            var sims = _simulationStore.GetAll();
-            var simsToDelete = sims.Where(x => x.DateCreated < DateTime.Now.AddDays(-untilLastXDays));
-            foreach (var sim in simsToDelete) {
-                _simulationStore.Delete(sim.Id);
-            }
         }
 
         public void DeleteSimulation(Guid simulationId)

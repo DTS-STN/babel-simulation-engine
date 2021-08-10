@@ -83,31 +83,6 @@
 					"response": []
 				},
 				{
-					"name": "Delete Simulations Until Last X Days",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{host}}/MaternityBenefits/:UntilLastXDays/Batch",
-							"host": [
-								"{{host}}"
-							],
-							"path": [
-								"MaternityBenefits",
-								":UntilLastXDays",
-								"Batch"
-							],
-							"variable": [
-								{
-									"key": "UntilLastXDays",
-									"value": "10"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "Get All Simulations",
 					"request": {
 						"method": "GET",
@@ -165,7 +140,13 @@
 					"name": "Get Persons",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "password",
+								"value": "replace_me",
+								"type": "text"
+							}
+						],
 						"url": {
 							"raw": "{{host}}/Persons",
 							"host": [
@@ -182,7 +163,13 @@
 					"name": "Delete all persons",
 					"request": {
 						"method": "DELETE",
-						"header": [],
+						"header": [
+							{
+								"key": "password",
+								"value": "replace_me",
+								"type": "text"
+							}
+						],
 						"url": {
 							"raw": "{{host}}/Persons",
 							"host": [
@@ -199,7 +186,13 @@
 					"name": "Delete Person",
 					"request": {
 						"method": "DELETE",
-						"header": [],
+						"header": [
+							{
+								"key": "password",
+								"value": "replace_me",
+								"type": "text"
+							}
+						],
 						"url": {
 							"raw": "{{host}}/Persons/:id",
 							"host": [
@@ -223,7 +216,13 @@
 					"name": "Create Persons",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "password",
+								"value": "replace me",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "[\r\n    {\r\n        \"age\": 26,\r\n        \"spokenLanguage\": \"French\",\r\n        \"educationLevel\": \"University\",\r\n        \"province\": \"PEI\",\r\n        \"averageIncome\": 1263.00\r\n    }\r\n]",
@@ -252,7 +251,13 @@
 					},
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "password",
+								"value": "replace me",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "",

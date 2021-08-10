@@ -36,7 +36,7 @@ namespace maternity_benefits.Storage.Cache
         }
 
         public void DeletePerson(Guid id) {
-            // TODO
+            // TODO: Implement this if needed?
             throw new NotImplementedException();
         }
     }

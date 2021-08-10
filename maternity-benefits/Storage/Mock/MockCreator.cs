@@ -103,6 +103,5 @@ namespace maternity_benefits.Storage.Mock
             }
             return baseAmount;
         }
-
     }
 }

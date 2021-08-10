@@ -1,6 +1,4 @@
-﻿using System;
-
-using esdc_simulation_base.Src.Lib;
+﻿using esdc_simulation_base.Src.Lib;
 using esdc_simulation_base.Src.Rules;
 using Rule = esdc_rules_classes.MaternityBenefits;
 

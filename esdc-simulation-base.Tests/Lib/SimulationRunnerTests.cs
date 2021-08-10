@@ -1,13 +1,9 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-
 using Xunit;
 using FakeItEasy;
 
 using esdc_simulation_base.Src.Lib;
 using esdc_simulation_base.Src.Classes;
-using esdc_simulation_base.Src.Storage;
 
 namespace esdc_simulation_base.Tests.Lib
 {

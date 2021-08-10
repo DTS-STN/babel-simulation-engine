@@ -1,6 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Linq;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 using esdc_simulation_base.Src.Classes;
 using maternity_benefits;
@@ -14,12 +15,21 @@ namespace esdc_simulation_api.Controllers
     public class MaternityBenefitsController : ControllerBase
     {
         private readonly IHandleSimulationRequests _handler;
+        private readonly ILogger<MaternityBenefitsController> _logger;
 
-        public MaternityBenefitsController(IHandleSimulationRequests handler)
+        public MaternityBenefitsController(
+            IHandleSimulationRequests handler,
+            ILogger<MaternityBenefitsController> logger)
         {
             _handler = handler;
+            _logger = logger;
         }
 
+        /// <summary>
+        /// Get Simulation information by Id. Does not include results
+        /// </summary>
+        /// <param name="simulationId"></param>
+        /// <returns></returns>
         [HttpGet("{simulationId}")]
         public ActionResult<SimulationResponse> GetSimulation(Guid simulationId)
         {
@@ -27,24 +37,33 @@ namespace esdc_simulation_api.Controllers
                 var simulation = _handler.GetSimulation(simulationId);
                 return Mapper.Convert(simulation);
             } catch (NotFoundException e) {
+                _logger.LogError("Simulation not found: {0}", simulationId);
                 return BadRequest(e.Message);
             }
         }
 
+        /// <summary>
+        /// Get all Simulations
+        /// </summary>
+        /// <returns></returns>
         [DisableFilter]
         [HttpGet]
         public ActionResult<AllSimulationsResponse> GetAllSimulations()
         {
-            var result = new List<SimulationResponse>();
-            var simulations = _handler.GetAllSimulations();
-            foreach (var sim in simulations) {
-                result.Add(Mapper.Convert(sim));
-            }
+            var result = _handler.GetAllSimulations()
+                .Select(Mapper.Convert)
+                .ToList();
+
             return new AllSimulationsResponse() {
                 Simulations = result
             };
         }
 
+        /// <summary>
+        /// Generate a new simulation.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns>Unique Id that identifies the simulation</returns>
         [HttpPost]
         public ActionResult<CreateSimulationResponse> CreateSimulation(CreateSimulationRequest request)
         {
@@ -55,6 +74,11 @@ namespace esdc_simulation_api.Controllers
             };
         }
 
+        /// <summary>
+        /// Get Simulation information and associated results
+        /// </summary>
+        /// <param name="simulationId"></param>
+        /// <returns></returns>
         [HttpGet("{simulationId}/Results")]
         public ActionResult<FullResponse> GetFullResponse(Guid simulationId)
         {
@@ -69,15 +93,12 @@ namespace esdc_simulation_api.Controllers
                 return BadRequest(e.Message);
             }
         }
-        
-        [DisableFilter]
-        [HttpDelete("{untilLastXDays}/Batch")]
-        public ActionResult DeleteSimulationBatch(int untilLastXDays)
-        {
-            _handler.DeleteSimulationBatch(untilLastXDays);
-            return Ok();
-        }
 
+        /// <summary>
+        /// Delete a simulation by Id
+        /// </summary>
+        /// <param name="simulationId"></param>
+        /// <returns></returns>
         [HttpDelete("{simulationId}")]
         public ActionResult DeleteSimulation(Guid simulationId)
         {
