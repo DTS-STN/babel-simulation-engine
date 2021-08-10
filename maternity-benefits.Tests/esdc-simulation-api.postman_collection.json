@@ -254,7 +254,7 @@
 						"header": [
 							{
 								"key": "password",
-								"value": "replace me",
+								"value": "replace_me",
 								"type": "text"
 							}
 						],
@@ -268,13 +268,20 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}/Persons/Mock",
+							"raw": "{{host}}/Persons/Mock/:numberOfMocks",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"Persons",
-								"Mock"
+								"Mock",
+								":numberOfMocks"
+							],
+							"variable": [
+								{
+									"key": "numberOfMocks",
+									"value": "10"
+								}
 							]
 						}
 					},

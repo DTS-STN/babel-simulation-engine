@@ -6,7 +6,7 @@ namespace maternity_benefits.Storage.Mock
     public static class MockCreator
     {
         private static readonly int MINIMUM_AGE = 16;
-        private static readonly int MAXIMUM_AGE = 36;
+        private static readonly int MAXIMUM_AGE = 40;
 
         public static List<MaternityBenefitsPerson> GetMockPersons(int amount = 100) {
             var result = new List<MaternityBenefitsPerson>();
@@ -37,9 +37,7 @@ namespace maternity_benefits.Storage.Mock
         private static string GenerateSpokenLanguage() {
             var rnd = new Random();
             var roll = rnd.Next(20);
-            if (roll < 3) {
-                return "Other";
-            } else if (roll < 10) { 
+            if (roll < 4) { 
                 return "French";
             } else {
                 return "English";
@@ -50,41 +48,47 @@ namespace maternity_benefits.Storage.Mock
             var rnd = new Random();
             var roll = rnd.Next(25);
             if (roll < 1) {
-                return "SK";
+                return "Saskatchewan";
             } else if (roll < 2) { 
-                return "MB";
+                return "Manitoba";
             } else if (roll < 5) { 
-                return "BC";
+                return "British Columbia";
             } else if (roll < 8) { 
-                return "AB";
+                return "Alberta";
             } else if (roll < 16) { 
-                return "ON";
+                return "Ontario";
             } else if (roll < 17) { 
-                return "NL";
+                return "Newfoundland and Labrador";
             } else if (roll < 18) { 
-                return "PEI";
+                return "Prince Edward Island";
             } else if (roll < 19) { 
-                return "NS";
+                return "Nova Scotia";
             } else if (roll < 20) { 
-                return "NB";
+                return "New Brunswick";
             } else if (roll < 21) { 
-                return "YK";
+                return "Yukon";
             } else if (roll < 22) { 
-                return "NWT";
+                return "Northwest Territories";
             } else if (roll < 23) { 
-                return "NT";
+                return "Nunavut";
             } else {
-                return "QC";
+                return "Quebec";
             }
         }
 
         private static string GenerateEducationLevel() {
             var rnd = new Random();
             var roll = rnd.Next(20);
-            if (roll < 6) {
-                return "University";
+            if (roll < 5) {
+                return "Apprenticeship";
+            } else if (roll < 9) { 
+                return "College";
+            } else if (roll < 12) { 
+                return "Primary - Elementary";
             } else if (roll < 15) { 
-                return "High School";
+                return "Secondary - High School";
+            } else if (roll < 19) { 
+                return "University";
             } else {
                 return "Other";
             }
@@ -92,7 +96,7 @@ namespace maternity_benefits.Storage.Mock
 
         private static decimal GenerateIncome() {
             var rnd = new Random();
-            decimal baseAmount = rnd.Next(300, 1300);
+            decimal baseAmount = rnd.Next(300, 1400);
 
             var roll = rnd.Next(1, 6);
             if (roll < 2) {

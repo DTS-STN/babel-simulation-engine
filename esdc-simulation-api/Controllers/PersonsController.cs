@@ -87,12 +87,10 @@ namespace esdc_simulation_api.Controllers
         /// Generate Mock Persons to be stored for subsequent simulations
         /// </summary>
         /// <returns></returns>
-        [HttpGet("Mock")]
-        public ActionResult MockSetup()
+        [HttpGet("Mock/{numberOfMocks}")]
+        public ActionResult MockSetup(int numberOfMocks)
         {   
-            var numberOfMocks = 100;
             _logger.LogInformation("Generating and storing {0} mock persons", numberOfMocks);
-
             var persons = _personStore.GetAllPersons();
             if (persons.Count() > 0) {
                 return BadRequest(new { message = "DB is populated. Cannot generate mocks."});
