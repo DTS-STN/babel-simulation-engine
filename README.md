@@ -91,4 +91,3 @@ To update the Nuget package.
 - Replace the relevant values (X.Y.Z and the Api Key) in the following command and run it: `dotnet nuget push BabelSimulationEngineSample.X.Y.Z.nupkg --api-key [API_KEY_GOES_HERE] --source https://api.nuget.org/v3/index.json`. The X.Y.Z should correspond to the version you set in the csproj file.
 - You can now go into the consuming applications (e.g. Data Primer) and update the package reference
  
- 
