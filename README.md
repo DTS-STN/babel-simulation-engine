@@ -32,13 +32,12 @@ The OpenAPI Spec for the project can be viewed at `/swagger/v1/swagger.json`, an
 ## Development
 
 ### Database Setup
-The Simulation Engine requires a connection to a database. This is where the simulation persons (data) is stored, as well as the results. 
 
-This project uses Entity Framework (EF) Core as an ORM for interacting with a relational SQL Database.  There are currently two deployments of the Simulation Engine. One points to a "mock" database server, and the other points to a "prod" database server. These two databases necessarily have the same schema, which is facilitated through Entity Framework and Migrations. 
+The Simulation Engine requires a connection to a database. This is where the simulation persons (data) is stored, as well as the results. Note that the storage systems are also implemented with a cache. This may be activated in lieu of a database if, for example, there is a desire to NOT collect and store any input from the user. This project uses Entity Framework (EF) Core as an ORM for interacting with a relational SQL Database. If deploying to a new environment, you will likely want to set up a new database for that environment.
 
 The EF functionality is stored in the maternity-benefits project under the Storage/EF folder. The ApplicationDbContext is the main link between the database and the C# classes. This class is injected into the EFStore classes so that the C# code can interact with the database values. 
 
-If new properties are being added to the database, then an EF migration is required (https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/?tabs=dotnet-core-cli). The changes cna be made to the C# class and then a migration must be created, which will generate a script inside the Migrations folder in the esdc-simulation-api project. The database must then be updated with the migration. This is actually handled in the code - in the Startup.cs file there is functionality to automatically run migrations.
+If new properties are being added to the database, then an EF migration is required (https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/?tabs=dotnet-core-cli). The changes can be made to the C# class and then a migration must be created, which will generate a script inside the Migrations folder in the esdc-simulation-api project. The database must then be updated with the migration. This is actually handled in the code - in the Startup.cs file there is functionality to automatically run migrations.
 
 If you are setting up a new Azure SQL database, then take the following steps:
 - Create a new SQL server  in Azure. Create a username and password and store it securely
@@ -51,9 +50,10 @@ If you are setting up a new Azure SQL database, then take the following steps:
 
 ### Config
 
-Ensure the config settings are properly set in the proper appsettings.XXX.json file in the esdc-simulation-api project. If you are developing locally, then set the desired parameters in the appsettings.Development.json file. The two config settings of interest are:
+When developing locally, ensure the config settings are properly set in the proper appsettings.Development.json file in the esdc-simulation-api project. The config settings of interest are:
 - ConnectionStrings.DefaultDB: this is the connection string for the database that stores the simulation data and results.
 - RulesOptions.Url: This is the host URL for the Rules Engine
+- PasswordOptions.Password: This is a password that must be sent in the header of all requests related to storing the Persons (Getting, Deleting, Generating Mocks)
 
 * For deployments, the configs are handled in the Azure App Services, and are injected as environment variables.
 
@@ -71,11 +71,11 @@ Note: If running this project locally alongside related web APIs (such as the Ru
 
 ### Testing
 
-Tests are set up for the base library and the maternity-benefits class library. Running `dotnet test` will run the tests for all test projects
+Tests are set up for the base library and the maternity-benefits class library. Running `dotnet test` will run the tests for all test projects. There is also a postman collection included to manually test the API requests.
 
 ### Deploying
 
-There are currently two separate deployments of the Simulation Engine, both in Microsoft Azure (Azure App Service). The mock deployment is connected to a mock database, and the prod deployment is connected to the prod database. Deployments are set up using github actions, based on manually clicking a button. Go to the github actions, choose the workflow (Deploy Mock or Deploy Prod), and then run it.
+Currently, the different deployments of the Simulation Engine are all hosted in  Microsoft Azure (Azure App Service). Each deployment is connected to its own server/db. Deployments are set up using github actions, based on manually clicking a button. Go to the github actions, choose the workflow, and then run it.
 
 ### Nuget package
 
