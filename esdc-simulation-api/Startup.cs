@@ -104,7 +104,8 @@ namespace esdc_simulation_api
             }
 
             // Seed data store with mock persons. Comment this out if using real data
-            SeedDataStoreWithPersons(app.ApplicationServices);
+            int personSeedAmount = 1000;
+            SeedDataStoreWithPersons(app.ApplicationServices, personSeedAmount);
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
@@ -162,13 +163,13 @@ namespace esdc_simulation_api
         
         }
     
-        private void SeedDataStoreWithPersons(IServiceProvider services) {
+        private void SeedDataStoreWithPersons(IServiceProvider services, int numPersons) {
             var scope = services.GetRequiredService<IServiceScopeFactory>().CreateScope();
             var personStore = scope.ServiceProvider.GetRequiredService<IStorePersons<MaternityBenefitsPerson>>();
         
             var persons = personStore.GetAllPersons();
             if (persons.Count() == 0) {
-                var mockPersons = MockCreator.GetMockPersons(100);
+                var mockPersons = MockCreator.GetMockPersons(numPersons);
                 personStore.AddPersons(mockPersons);
             }
         }

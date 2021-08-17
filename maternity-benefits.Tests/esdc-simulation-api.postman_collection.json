@@ -15,7 +15,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"SimulationName\": \"Test simulation\",\r\n    \"BaseCaseRequest\": {\r\n        \"MaxWeeklyAmount\": 595,\r\n        \"Percentage\": 55,\r\n        \"NumWeeks\": 15\r\n    },\r\n    \"VariantCaseRequest\": {\r\n        \"MaxWeeklyAmount\": 400,\r\n        \"Percentage\": 60,\r\n        \"NumWeeks\": 16\r\n    }\r\n}",
+							"raw": "{\r\n    \"SimulationName\": \"Test simulation\",\r\n    \"BaseCaseRequest\": {\r\n        \"MaxWeeklyAmount\": 595,\r\n        \"Percentage\": 55,\r\n        \"NumWeeks\": 15\r\n    },\r\n    \"VariantCaseRequest\": {\r\n        \"MaxWeeklyAmount\": 450,\r\n        \"Percentage\": 60,\r\n        \"NumWeeks\": 16\r\n    }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -219,7 +219,7 @@
 						"header": [
 							{
 								"key": "password",
-								"value": "replace me",
+								"value": "replace_me",
 								"type": "text"
 							}
 						],
@@ -239,49 +239,6 @@
 							],
 							"path": [
 								"Persons"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Generate Mock",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "password",
-								"value": "replace_me",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{host}}/Persons/Mock/:numberOfMocks",
-							"host": [
-								"{{host}}"
-							],
-							"path": [
-								"Persons",
-								"Mock",
-								":numberOfMocks"
-							],
-							"variable": [
-								{
-									"key": "numberOfMocks",
-									"value": "10"
-								}
 							]
 						}
 					},
