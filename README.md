@@ -31,9 +31,9 @@ The OpenAPI Spec for the project can be viewed at `/swagger/v1/swagger.json`, an
 
 ## Development
 
-### Database Setup
+### Storage Layer
 
-The Simulation Engine requires a connection to a database. This is where the simulation persons (data) is stored, as well as the results. Note that the storage systems are also implemented with a cache. This may be activated in lieu of a database if, for example, there is a desire to NOT collect and store any input from the user. This project uses Entity Framework (EF) Core as an ORM for interacting with a relational SQL Database. If deploying to a new environment, you will likely want to set up a new database for that environment.
+The Simulation Engine requires the implementation of a storage interface. The storage layer is responsible for storing the simulation persons (data) as well as the simulation results. There is code to support both a cache implementation and a DB implementation. These can be switched around on the dependency injection in the Startup.cs file. The cache implementation uses the built-in caching, so no other database setup is required. If you want persistent data, then you will need to provision and link to a database. This project uses Entity Framework (EF) Core as an ORM for interacting with a relational SQL Database. If deploying to a new environment, you will likely want to set up a new database for that environment.
 
 The EF functionality is stored in the maternity-benefits project under the Storage/EF folder. The ApplicationDbContext is the main link between the database and the C# classes. This class is injected into the EFStore classes so that the C# code can interact with the database values. 
 
@@ -43,9 +43,16 @@ If you are setting up a new Azure SQL database, then take the following steps:
 - Create a new SQL server  in Azure. Create a username and password and store it securely
 - In the firewall settings of your new server, ensure that you "Allow Azure Services" to access it, and you can also add your client IP to the whitelist
 - Create a new database on that server
-- Get the connection string for the database, and add it into the config setting
+- Get the connection string for the database, and add it into the config setting (see "Config" section for where to add it)
+- Format of connection string: `Server=tcp:your-server-name.net,1433;Database=your-db-name;Initial Catalog=your-db-name;Persist Security Info=False;User ID=your-user-id;Password=XXXXXXXXX;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;`
 - Run the project, so that the code in Startup.cs can run the migration against the database
 - Verify the database has the proper tables
+
+### Data
+
+Another consideration is the data that will be used for the simulations. We have explored using both real data as well as simply using mock data. For working with real data, you will need to be familiar with the [Data Primer project](https://github.com/DTS-STN/babel-data-primer). If using mock data, then you can use the functionality that is built-in to the simulation engine for generating and storing the mocks. The code to generate mocks is run by default on startup and can be edited in the Startup.cs file.
+
+If you just want to get started on development, the easiest way to get things up and running is to use the cache storage implementation and use the mock data. Ensure this is all configured in the dependency injection in the Startup.cs file. When you run the project, the data will automatically get populated into the cache and will be ready to use for simulations.
 
 
 ### Config
@@ -55,7 +62,11 @@ When developing locally, ensure the config settings are properly set in the prop
 - RulesOptions.Url: This is the host URL for the Rules Engine
 - PasswordOptions.Password: This is a password that must be sent in the header of all requests related to storing the Persons (Getting, Deleting, Generating Mocks)
 
-* For deployments, the configs are handled in the Azure App Services, and are injected as environment variables.
+For deployments, the configs are handled in the Azure App Services (Configuration settings), and are injected as environment variables. The names of the required variables can be found in the Startup.cs file:
+- DEFAULT_DB
+- RULES_URL
+- PASSWORD_FILTER
+
 
 ### Running Locally
 
