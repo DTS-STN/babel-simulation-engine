@@ -82,26 +82,6 @@ namespace esdc_simulation_api.Controllers
             } 
         }
 
-
-        /// <summary>
-        /// Generate Mock Persons to be stored for subsequent simulations
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet("Mock/{numberOfMocks}")]
-        public ActionResult MockSetup(int numberOfMocks)
-        {   
-            _logger.LogInformation("Generating and storing {0} mock persons", numberOfMocks);
-            var persons = _personStore.GetAllPersons();
-            if (persons.Count() > 0) {
-                return BadRequest(new { message = "DB is populated. Cannot generate mocks."});
-            }
-
-            var mockPersons = MockCreator.GetMockPersons(numberOfMocks);
-            _personStore.AddPersons(mockPersons);
-
-            return Ok();
-        }
-
         private MaternityBenefitsPerson Convert(MaternityBenefitsPersonRequest req) {
             return new MaternityBenefitsPerson() {
                 Id = Guid.NewGuid(),

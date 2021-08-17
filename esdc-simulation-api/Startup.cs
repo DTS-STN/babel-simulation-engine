@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.IO;
 using System.Reflection;
 
@@ -22,6 +24,7 @@ using maternity_benefits;
 using maternity_benefits.Storage.EF;
 using maternity_benefits.Storage.EF.Store;
 using maternity_benefits.Storage.Cache;
+using maternity_benefits.Storage.Mock;
 
 namespace esdc_simulation_api
 {
@@ -100,6 +103,9 @@ namespace esdc_simulation_api
                 }
             }
 
+            // Seed data store with mock persons. Comment this out if using real data
+            SeedDataStoreWithPersons(app.ApplicationServices);
+
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
 
@@ -145,14 +151,26 @@ namespace esdc_simulation_api
             services.AddScoped<IRulesEngine, RulesApi>();
 
             // EF Storage
-            services.AddScoped<IStorePersons<MaternityBenefitsPerson>, MaternityBenefitsPersonEFStore>();
+            //services.AddScoped<IStorePersons<MaternityBenefitsPerson>, MaternityBenefitsPersonEFStore>();
             //services.AddScoped<IStoreSimulations<MaternityBenefitsCase>, MaternityBenefitsSimulationEFStore>();
             //services.AddScoped<IStoreSimulationResults<MaternityBenefitsCase>, MaternityBenefitsSimulationResultsEFStore>();
             
             // Cache Storage
-            // services.AddScoped<IStorePersons<MaternityBenefitsPerson>, MaternityBenefitsPersonStore>();
+            services.AddScoped<IStorePersons<MaternityBenefitsPerson>, MaternityBenefitsPersonCacheStore>();
             services.AddScoped<IStoreSimulations<MaternityBenefitsCase>, MaternityBenefitsSimulationCacheStore>();
             services.AddScoped<IStoreSimulationResults<MaternityBenefitsCase>, MaternityBenefitsSimulationResultsCacheStore>();
+        
+        }
+    
+        private void SeedDataStoreWithPersons(IServiceProvider services) {
+            var scope = services.GetRequiredService<IServiceScopeFactory>().CreateScope();
+            var personStore = scope.ServiceProvider.GetRequiredService<IStorePersons<MaternityBenefitsPerson>>();
+        
+            var persons = personStore.GetAllPersons();
+            if (persons.Count() == 0) {
+                var mockPersons = MockCreator.GetMockPersons(100);
+                personStore.AddPersons(mockPersons);
+            }
         }
     }
 }
