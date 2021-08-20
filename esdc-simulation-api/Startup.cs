@@ -168,11 +168,6 @@ namespace esdc_simulation_api
 
             services.AddScoped<IRulesEngine, RulesApi>();
 
-            // EF Storage
-            services.AddScoped<IStorePersons<MaternityBenefitsPerson>, MaternityBenefitsPersonEFStore>();
-            services.AddScoped<IStoreSimulations<MaternityBenefitsCase>, MaternityBenefitsSimulationEFStore>();
-            services.AddScoped<IStoreSimulationResults<MaternityBenefitsCase>, MaternityBenefitsSimulationResultsEFStore>();
-            
             // Cache Storage
             if (USING_DB) {
                 services.AddScoped<IStorePersons<MaternityBenefitsPerson>, MaternityBenefitsPersonEFStore>();
