@@ -30,6 +30,15 @@ namespace esdc_simulation_api
 {
     public class Startup
     {
+        // Toggle for using DB. If 'false', then cache storage implementation is used
+        private static readonly bool USING_DB = false;
+
+        // Toggle true for automatically adding mock persons to the storage system
+        private static readonly bool USING_MOCK = true;
+
+        // If using mocks, then specify the number of mocks to add to the system
+        private static readonly int MOCK_SEED_AMOUNT = 1000;
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -85,27 +94,35 @@ namespace esdc_simulation_api
             services.AddSingleton<IOptions<PasswordFilterOptions>>(x => Options.Create(passwordOptions));
             services.AddScoped<PasswordFilterAttribute>();
 
-            // DB injection
-            string connectionString = Configuration.GetConnectionString("DefaultDB") ??
-                Environment.GetEnvironmentVariable("DEFAULT_DB");
-            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString, b => b.MigrationsAssembly("esdc-simulation-api")));
+            // DB injection: Only needed if using a DB implementation for storage
+            if (USING_DB) {
+                string connectionString = Configuration.GetConnectionString("DefaultDB") ??
+                    Environment.GetEnvironmentVariable("DEFAULT_DB");
+                services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString, b => b.MigrationsAssembly("esdc-simulation-api")));
+            }
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             // Apply migrations
-            using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
-            {
-                using (var context = serviceScope.ServiceProvider.GetService<ApplicationDbContext>())
+            if (USING_DB) {
+                using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
                 {
-                    context.Database.Migrate();
+                    using (var context = serviceScope.ServiceProvider.GetService<ApplicationDbContext>())
+                    {
+                        context.Database.Migrate();
+                    }
                 }
             }
+            
 
             // Seed data store with mock persons. Comment this out if using real data
-            int personSeedAmount = 1000;
-            SeedDataStoreWithPersons(app.ApplicationServices, personSeedAmount);
+            if (USING_MOCK) {
+                SeedDataStoreWithPersons(app.ApplicationServices, MOCK_SEED_AMOUNT);
+            }
+            
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
@@ -152,15 +169,20 @@ namespace esdc_simulation_api
             services.AddScoped<IRulesEngine, RulesApi>();
 
             // EF Storage
-            //services.AddScoped<IStorePersons<MaternityBenefitsPerson>, MaternityBenefitsPersonEFStore>();
-            //services.AddScoped<IStoreSimulations<MaternityBenefitsCase>, MaternityBenefitsSimulationEFStore>();
-            //services.AddScoped<IStoreSimulationResults<MaternityBenefitsCase>, MaternityBenefitsSimulationResultsEFStore>();
+            services.AddScoped<IStorePersons<MaternityBenefitsPerson>, MaternityBenefitsPersonEFStore>();
+            services.AddScoped<IStoreSimulations<MaternityBenefitsCase>, MaternityBenefitsSimulationEFStore>();
+            services.AddScoped<IStoreSimulationResults<MaternityBenefitsCase>, MaternityBenefitsSimulationResultsEFStore>();
             
             // Cache Storage
-            services.AddScoped<IStorePersons<MaternityBenefitsPerson>, MaternityBenefitsPersonCacheStore>();
-            services.AddScoped<IStoreSimulations<MaternityBenefitsCase>, MaternityBenefitsSimulationCacheStore>();
-            services.AddScoped<IStoreSimulationResults<MaternityBenefitsCase>, MaternityBenefitsSimulationResultsCacheStore>();
-        
+            if (USING_DB) {
+                services.AddScoped<IStorePersons<MaternityBenefitsPerson>, MaternityBenefitsPersonEFStore>();
+                services.AddScoped<IStoreSimulations<MaternityBenefitsCase>, MaternityBenefitsSimulationEFStore>();
+                services.AddScoped<IStoreSimulationResults<MaternityBenefitsCase>, MaternityBenefitsSimulationResultsEFStore>();
+            } else {     
+                services.AddScoped<IStorePersons<MaternityBenefitsPerson>, MaternityBenefitsPersonCacheStore>();
+                services.AddScoped<IStoreSimulations<MaternityBenefitsCase>, MaternityBenefitsSimulationCacheStore>();
+                services.AddScoped<IStoreSimulationResults<MaternityBenefitsCase>, MaternityBenefitsSimulationResultsCacheStore>();
+            }
         }
     
         private void SeedDataStoreWithPersons(IServiceProvider services, int numPersons) {
